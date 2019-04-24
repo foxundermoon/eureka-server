@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.3.RELEASE'
+    id 'org.springframework.boot' version '2.2.0.M2'
     id 'java'
 }
 
@@ -7,10 +7,12 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'mn.fox'
 version = '0.0.1'
-sourceCompatibility = '1.8'
+sourceCompatibility = '12'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/snapshot' }
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
@@ -26,19 +28,4 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
-}
-
-task dockerBuild(type: Exec) {
-    dependsOn "bootJar"
-    workingDir "${project.rootDir}"
-    executable "docker"
-    args "build", "-t", "foxundermoon/${project.name}:${project.version}", "."
-}
-
-task dockerPush(type: Exec) {
-    dependsOn "dockerBuild"
-    executable "sh"
-    args "-c",
-            "docker push  foxundermoon/${project.name}:${project.version} && docker tag  foxundermoon/${project.name}:${project.version}  foxundermoon/${project.name}:latest"
-
 }
